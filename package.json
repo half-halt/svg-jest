@@ -1,6 +1,6 @@
 {
   "name": "svg-jest",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A simple transformer for .SVG for Jest",
   "main": "index.js",
   "repository": "https://github.com/half-halt/svg-jest.git",
