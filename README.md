@@ -1,15 +1,19 @@
 # svg-jest
 
+
 This is a small library which transforms .SVG files for jest. It produces
-and SVG in the stream which has two properties 'data-jest-file-name' which
-includes the path and 'data-jest-name' which just the name portion.
+and SVG in the stream.
+
+The transformed item will have the following properties on it.
+* data-jest-file-name: The name of the file (e.g. 'some-image.svg')
+* data-jest-svg-name: Only the name portion of the file (e.g. 'some-image')
+* data-testid: Same as data-jest-svg-name, but works with @testing-library/react getByTestId()
 
 Works with both of these formats:
 
 ```js
 import MySvg from '../images/an-image.svg';
-```
-```js
+
 import { ReactComponent as MySvg}  from '../images/an-image.svg';
 ```
 
@@ -35,12 +39,12 @@ The resulting HTML:
 
 ```html
 <div>
- <svg data-jest-file-name='an-image.svg' data-jest-name='an-image'/>
+ <svg data-jest-file-name='an-image.svg' data-jest-svg-name='an-image' data-testid='an-image'/>
 </div>
 ```
 
-Any properties passed to '<MySvg>' are passed along into both the snapshot
-and the resulting HTML.
+In additoin, any properties passed to '<MySvg>' are passed along into both the snapshot
+and the resulting trees.
 
 # usage
 Configure jest:

@@ -10,7 +10,8 @@ const ${functionName} = (props) =>
   	return React.createElement('svg', { 
   		...props, 
 		'data-jest-file-name': '${pathname}',
-		'data-jest-svg-name': '${filename}'
+		'data-jest-svg-name': '${filename}',
+		'data-testid': '${filename}'
 	});
 }
 
