@@ -15,7 +15,8 @@ const ${functionName} = (props) =>
 	});
 }
 
-module.exports.default = ${functionName};
+module.exports.__esModule = true;
+module.exports.default = '${pathname}';
 module.exports.ReactComponent = ${functionName};
 `;
 }
