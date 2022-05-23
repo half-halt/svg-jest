@@ -37,10 +37,10 @@ function processSvg(contents, filename)
 	if (parts.ext.toLowerCase() === '.svg')
 	{
 		const functionName = createFunctionName(parts.name);
-		return buildModule(functionName, parts.base, parts.name);
+		return { code: buildModule(functionName, parts.base, parts.name) };
 	}
 	
-	return contents;
+	return { code: contents };
 }
 
 module.exports = 
