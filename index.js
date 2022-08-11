@@ -1,49 +1,81 @@
 const path = require('path');
 
-function buildModule(functionName, pathname, filename)
-{
+/**
+ * This function build module.
+ *
+ * P.S.:
+ * The string "module.exports.default = ${functionName};"
+ * replaced with (by https://github.com/ChromeQ):
+ * ```
+ * module.exports.__esModule = true;
+ * module.exports.default = '${pathname}';
+ * ```
+ *
+ * Object props is a more extensible solution when we have a lot of props
+ * @param {Object} props
+ * @param {string} props.functionName
+ * @param {string} props.pathname
+ * @param {string} props.filename
+ *
+ * @function {(functionName, pathname, filename) => string} buildModule
+ * @param {string} props
+ * @return {string} string module
+ */
+const buildModule = props => {
+
+	const {
+		filename,
+		functionName,
+		pathname,
+	} = props;
+
 	return `
-const React = require('react');
+    const React = require('react');
+    const ${functionName} = (props) => 
+    {
+        return React.createElement('svg', { 
+        ...props, 
+        'data-jest-file-name': '${pathname}',
+        'data-jest-svg-name': '${filename}',
+        'data-testid': '${filename}'
+      });
+    }
+    module.exports.__esModule = true;
+    module.exports.default = '${pathname}';
+    module.exports.ReactComponent = ${functionName};
+`;};
 
-const ${functionName} = (props) => 
-{
-  	return React.createElement('svg', { 
-  		...props, 
-		'data-jest-file-name': '${pathname}',
-		'data-jest-svg-name': '${filename}',
-		'data-testid': '${filename}'
-	});
-}
-
-module.exports.default = ${functionName};
-module.exports.ReactComponent = ${functionName};
-`;
-}
-
-function createFunctionName(base)
-{
+/**
+ * This function creates a function name
+ * @function {(base) => string} createFunctionName
+ * @param {string} base
+ * @return {string} string module
+ */
+const createFunctionName = base => {
 	const words = base.split(/\W+/);
-	return words.reduce(
-		(identifer, word) => {
-			return identifer + 
-				word.substr(0, 1).toUpperCase() +
-				word.substr(1);
-		}, '');
-}
+	/* here I refactored the code a bit and replaced "substr" (Deprecated) with "substring" */
+	return words.reduce((identifier, word) => identifier + word.substring(0, 1).toUpperCase() + word.substring(1), '');
+};
 
-function processSvg(contents, filename)
-{
+/**
+ * This function process incoming svg data
+ * @function {(contents, filename) => string} processSvg
+ * @param {string} contents - your svg. String like "<svg viewBox="..."><path d="..."/></svg>"
+ * @param {string} filename - full path of your file
+ * @return {string} string module
+ */
+const processSvg = (contents, filename) => {
 	const parts = path.parse(filename);
-	if (parts.ext.toLowerCase() === '.svg')
-	{
+	if (parts.ext.toLowerCase() === '.svg') {
 		const functionName = createFunctionName(parts.name);
-		return buildModule(functionName, parts.base, parts.name);
+		return buildModule({
+		   filename: parts.name,
+		   functionName,
+		   pathname: parts.base,
+	   });
 	}
-	
-	return contents;
-}
 
-module.exports = 
-{
-	process: processSvg
-}
+	return contents;
+};
+
+module.exports = { process: processSvg };
