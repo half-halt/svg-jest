@@ -2,7 +2,7 @@ const path = require('path');
 
 function buildModule(functionName, pathname, filename)
 {
-	return `
+	return { code: `
 const React = require('react');
 
 const ${functionName} = (props) => 
@@ -17,7 +17,7 @@ const ${functionName} = (props) =>
 
 module.exports.default = ${functionName};
 module.exports.ReactComponent = ${functionName};
-`;
+`};
 }
 
 function createFunctionName(base)
